@@ -413,6 +413,7 @@ TESTS = \
 	objects/signals-delegate-parameter.vala \
 	objects/signals-lambda-delegate.vala \
 	objects/singleton.vala \
+	objects/type-narrowing.vala \
 	objects/test-025.vala \
 	objects/test-026.vala \
 	objects/test-029.vala \

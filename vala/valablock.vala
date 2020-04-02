@@ -99,6 +99,11 @@ public class Vala.Block : Symbol, Statement {
 		local_variables.add (local);
 	}
 
+	public void add_variable_override (Variable local, LocalVariable replacement) {
+		local_variables.add (replacement);
+		scope.add (local.name, replacement);
+	}
+
 	public void remove_local_variable (LocalVariable local) {
 		local_variables.remove (local);
 	}

@@ -121,6 +121,33 @@ public class Vala.IfStatement : CodeNode, Statement {
 
 		condition.check (context);
 
+		// chech if this statement is used for "type narrowing"
+		unowned TypeCheck? type_check = null;
+		unowned Block? narrowed_block = null;
+		unowned Variable? narrowed_var = null;
+		if (condition is UnaryExpression && ((UnaryExpression) condition).operator == UnaryOperator.LOGICAL_NEGATION) {
+			unowned Expression inner = ((UnaryExpression) condition).inner;
+			if (inner is TypeCheck) {
+				type_check = (TypeCheck) inner;
+				narrowed_var = type_check.expression.symbol_reference as Variable;
+				narrowed_block = false_statement;
+			}
+		} else if (condition is TypeCheck) {
+			type_check = (TypeCheck) condition;
+			narrowed_var = type_check.expression.symbol_reference as Variable;
+			narrowed_block = true_statement;
+		}
+		if (narrowed_var != null) {
+			var narrowed_type = type_check.type_reference.copy ();
+			narrowed_type.value_owned = false;
+			narrowed_type.nullable = false;
+			var initializer = new CastExpression (new MemberAccess.simple (narrowed_var.name, type_check.source_reference), narrowed_type, type_check.source_reference);
+			var local = new LocalVariable (narrowed_type, get_temp_name (), initializer, type_check.source_reference);
+			narrowed_block.insert_statement (0, new DeclarationStatement (local, source_reference));
+			narrowed_block.add_variable_override (narrowed_var, local);
+			local.check (context);
+		}
+
 		true_statement.check (context);
 		if (false_statement != null) {
 			false_statement.check (context);
