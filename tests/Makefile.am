@@ -21,6 +21,7 @@ noinst_PROGRAMS = \
 TESTS_ENVIRONMENT = EXEEXT=$(EXEEXT) CFLAGS='$(CFLAGS)' CPPFLAGS='$(CPPFLAGS)' LDFLAGS='$(LDFLAGS)' TEST_CFLAGS='$(TEST_CFLAGS)' CC='$(CC)' $(srcdir)/testrunner.sh
 
 TESTS = \
+	dbus/properties.test \
 	basic-types/integers.vala \
 	basic-types/escape-chars.vala \
 	basic-types/floats.vala \
